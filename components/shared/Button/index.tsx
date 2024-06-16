@@ -28,6 +28,7 @@ const Button = ({
 
 	return (
 		<button
+			type='button'
 			{...props}
 			className={clsx(
 				sizeStyles[size],
