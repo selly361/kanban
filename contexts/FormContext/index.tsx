@@ -8,8 +8,7 @@ import {
 	useState
 } from 'react'
 import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { BoardValidation } from '@/validations'
+import { resolver } from '@/validations'
 import * as actions from '@/actions'
 import * as Types from '@/types'
 import { useParams } from 'next/navigation'
@@ -28,161 +27,74 @@ export const useFormContext = (): FormContextType => {
 export const FormProvider = ({ children }: PropsWithChildren) => {
 	const boardName = decodeURIComponent(useParams().board as string)
 	const [loading, setLoading] = useState(false)
-	const [error, setError] = useState<string | null>(null)
 
 	const formMethods = useForm<Types.FormValues>({
 		mode: 'onSubmit',
-		resolver: zodResolver(BoardValidation)
+		resolver
 	})
 
-	const createTask = async (columnName: string, taskData: Types.Task) => {
+	const createTask = async (columnName: string, taskData: Types.ITask) => {
 		setLoading(true)
-		try {
-			const task = await actions.createTask(
-				boardName as string,
-				columnName,
-				taskData
-			)
-			formMethods.reset()
-			return task
-		} catch (error) {
-			console.error('Error creating task:', error)
-			setError('Could not create task')
-			throw error
-		} finally {
-			setLoading(false)
-		}
+		await actions.createTask(boardName, columnName, taskData)
+		formMethods.reset()
+		setLoading(false)
 	}
 
 	const deleteTask = async (columnName: string, taskId: string) => {
 		setLoading(true)
-		try {
-			await actions.deleteTask(boardName as string, columnName, taskId)
-		} catch (error) {
-			console.error('Error deleting task:', error)
-			setError('Could not delete task')
-			throw error
-		} finally {
-			setLoading(false)
-		}
+		await actions.deleteTask(boardName, columnName, taskId)
+		setLoading(false)
 	}
 
 	const editTask = async (
 		columnName: string,
 		taskId: string,
-		updatedTaskData: Types.Task
+		updatedTaskData: Types.ITask
 	) => {
 		setLoading(true)
-
-		try {
-			const task = await actions.editTask(
-				boardName as string,
-				columnName,
-				taskId,
-				updatedTaskData
-			)
-			return task
-		} catch (error) {
-			console.error('Error editing task:', error)
-
-			setError('Could not edit task')
-			throw error
-		} finally {
-			setLoading(false)
-		}
+		await actions.editTask(boardName, columnName, taskId, updatedTaskData)
+		setLoading(false)
 	}
 
-	const addBoard = async (boardData: Types.Board) => {
+	const addBoard = async (boardData: Types.IBoard) => {
 		setLoading(true)
-		try {
-			const board = await actions.addBoard(boardData)
-			return board
-		} catch (error) {
-			console.error('Error adding board:', error)
-			setError('Could not add board')
-			throw error
-		} finally {
-			setLoading(false)
-		}
+		await actions.addBoard(boardData)
+		setLoading(false)
 	}
 
-	const editBoard = async (updatedBoardData: Types.Board) => {
+	const editBoard = async (updatedBoardData: Types.IBoard) => {
 		setLoading(true)
-		try {
-			const board = await actions.editBoard(
-				boardName as string,
-				updatedBoardData
-			)
-			return board
-		} catch (error) {
-			console.error('Error editing board:', error)
-			setError('Could not edit board')
-			throw error
-		} finally {
-			setLoading(false)
-		}
+		await actions.editBoard(boardName, updatedBoardData)
+		setLoading(false)
 	}
 
 	const deleteBoard = async () => {
 		setLoading(true)
-		try {
-			await actions.deleteBoard(boardName as string)
-		} catch (error) {
-			console.error('Error deleting board:', error)
-			setError('Could not delete board')
-			throw error
-		} finally {
-			setLoading(false)
-		}
+		await actions.deleteBoard(boardName)
+		setLoading(false)
 	}
 
-	const addColumn = async (columnData: Types.Column) => {
+	const addColumn = async (columnData: Types.IColumn) => {
 		setLoading(true)
-		try {
-			const column = await actions.addColumn(boardName as string, columnData)
-			return column
-		} catch (error) {
-			console.error('Error adding column:', error)
-			setError('Could not add column')
-			throw error
-		} finally {
-			setLoading(false)
-		}
+		await actions.addColumn(boardName, columnData)
+		setLoading(false)
 	}
 
 	const editColumn = async (
 		columnName: string,
-		updatedColumnData: Types.Column
+		updatedColumnData: Types.IColumn
 	) => {
 		setLoading(true)
-		try {
-			const column = await actions.editColumn(
-				boardName as string,
-				columnName,
-				updatedColumnData
-			)
-			return column
-		} catch (error) {
-			console.error('Error editing column:', error)
-			setError('Could not edit column')
-			throw error
-		} finally {
-			setLoading(false)
-		}
+		await actions.editColumn(boardName, columnName, updatedColumnData)
+		setLoading(false)
 	}
 
 	const deleteColumn = async (columnName: string) => {
 		setLoading(true)
-		try {
-			await actions.deleteColumn(boardName as string, columnName)
-		} catch (error) {
-			console.error('Error deleting column:', error)
-			setError('Could not delete column')
-			throw error
-		} finally {
-			setLoading(false)
-		}
+		await actions.deleteColumn(boardName, columnName)
+		setLoading(false)
 	}
+
 
 	return (
 		<FormContext.Provider
@@ -197,8 +109,7 @@ export const FormProvider = ({ children }: PropsWithChildren) => {
 				addColumn,
 				editColumn,
 				deleteColumn,
-				loading,
-				error
+				loading
 			}}
 		>
 			{children}
