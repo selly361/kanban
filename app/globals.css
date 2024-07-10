@@ -2,32 +2,103 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
+@layer components {
+	/* Light theme */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-}
+	:root {
+		--bodyBg: #e4ebfa;
+		--navBarBg: white;
+		--asideBg: white;
+		--taskBg: white;
+		--scrollBg: white;
+		--NewColumn: linear-gradient(
+			to bottom,
+			rgba(121, 132, 147, 0.2),
+			rgba(130, 143, 163, 0.1),
+			rgba(130, 143, 163, 0)
+		);
+		--subTaskCheckBoxBg: #f4f7fd;
+		--subTaskCheckBoxHover: #979797;
+		--checkBoxBg: white;
+		--completedCheckBoxBg: #635fc7;
+		--textFieldError: #ea5555;
+		--dropDownBorder: #828fa3;
+		--dropDownActive: #635fc7;
+		--dropDownBg: white;
+		--buttonPrimaryBg: #635fc7;
+		--buttonPrimaryHover: #a8a4ff;
+		--buttonPrimaryText: white;
+		--buttonSecondaryBg: rgba(99, 95, 199, 0.1);
+		--buttonSecondaryText: #635fc7;
+		--buttonSecondaryHover: rgba(99, 95, 199, 0.25);
+		--deleteButtonBg: #ea5555;
+		--deleteButtonText: white;
+		--deleteButtonHover: #ff9898;
+		--textPrimary: black;
+		--border: rgba(0, 0, 0, 0.15);
+		--grey: #828fa3;
+		--blue: #635fc7;
+		--lightBlue: #a8a4ff;
+		--red: #ea5555;
+		--normalTheme: white;
+		--editDropDown: white;
+	}
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-}
+	/* Dark theme */
+    
+	.dark {
+		--bodyBg: #20212c;
+		--navBarBg: #2b2c37;
+		--asideBg: #2b2c37;
+		--taskBg: #2b2c37;
+		--scrollBg: #2b2c37;
+		--NewColumn: linear-gradient(
+			to bottom,
+			rgba(121, 132, 147, 0.2),
+			rgba(130, 143, 163, 0.1),
+			rgba(130, 143, 163, 0)
+		);
+		--subTaskCheckBoxBg: #20212c;
+		--subTaskCheckBoxHover: #635fc7;
+		--checkBoxBg: #2b2c37;
+		--completedCheckBoxBg: #635fc7;
+		--textFieldError: #ea5555;
+		--dropDownBorder: #828fa3;
+		--dropDownActive: #635fc7;
+		--dropDownBg: #20212c;
+		--buttonPrimaryBg: #635fc7;
+		--buttonPrimaryHover: #a8a4ff;
+		--buttonPrimaryText: white;
+		--buttonSecondaryBg: white;
+		--buttonSecondaryText: #635fc7;
+		--buttonSecondaryHover: rgba(255, 255, 255, 0.6);
+		--deleteButtonBg: #ea5555;
+		--deleteButtonText: white;
+		--deleteButtonHover: #ff9898;
+		--textPrimary: white;
+		--border: #3e3f4e;
+		--grey: #828fa3;
+		--blue: #635fc7;
+		--lightBlue: #a8a4ff;
+		--red: #ea5555;
+		--normalTheme: black;
+		--editDropDown: #20212c;
+	}
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+	/* Scrollbar styles */
+	::-webkit-scrollbar {
+		width: 10px;
+		height: 10%;
+		background: var(--scrollBg);
+	}
+
+	::-webkit-scrollbar-track {
+		border-radius: 10px;
+		background: var(--scrollBg);
+	}
+
+	::-webkit-scrollbar-thumb {
+		border-radius: 5px;
+		background: var(--scrollBg);
+	}
 }
