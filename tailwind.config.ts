@@ -47,54 +47,11 @@ const config: Config = {
 				editDropDown: 'var(--editDropDown)'
 			},
 			fontSize: {
-				'heading-l': [
-					'36px',
-					{
-						lineHeight: '33px',
-						letterSpacing: '-1.125px',
-						fontWeight: '700'
-					}
-				],
-				'heading-m': [
-					'24px',
-					{
-						lineHeight: '22px',
-						letterSpacing: '-0.75px',
-						fontWeight: '700'
-					}
-				],
-				'heading-s': [
-					'15px',
-					{
-						lineHeight: '24px',
-						letterSpacing: '-0.25px',
-						fontWeight: '700'
-					}
-				],
-				'heading-s-variant': [
-					'15px',
-					{
-						lineHeight: '15px',
-						letterSpacing: '-0.25px',
-						fontWeight: '700'
-					}
-				],
-				body: [
-					'13px',
-					{
-						lineHeight: '18px',
-						letterSpacing: '-0.1px',
-						fontWeight: '500'
-					}
-				],
-				'body-variant': [
-					'13px',
-					{
-						lineHeight: '15px',
-						letterSpacing: '-0.1px',
-						fontWeight: '500'
-					}
-				]
+				'heading-xl': ['24px', { fontWeight: '700' }],
+				'heading-l': ['18px', { fontWeight: '700' }],
+				'heading-m': ['15px', { fontWeight: '700' }],
+				'body-l': ['13px', { lineHeight: '23px', fontWeight: '500' }],
+				'body-m': ['12px', { fontWeight: '700' }]
 			},
 			backgroundImage: {
 				NewColumn: 'var(--NewColumn)'
