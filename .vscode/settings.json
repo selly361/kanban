@@ -1,8 +1,0 @@
-{
-    "files.exclude": {
-        "node_modules": true,
-        ".vscode": true,
-        "tsconfig.json": true,
-        "Kanban-task-management-web-app": true
-    }
-}
