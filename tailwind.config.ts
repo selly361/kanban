@@ -55,6 +55,11 @@ const config: Config = {
 			},
 			backgroundImage: {
 				NewColumn: 'var(--NewColumn)'
+			},
+
+			borderRadius: {
+				'button-md': '20px',
+				'button-lg': '24px'
 			}
 		}
 	},
