@@ -5,6 +5,22 @@
 @layer components {
 	/* Light theme */
 
+	.button {
+		@apply transition-colors duration-300 ease-in-out grid place-items-center rounded-button-md px-6
+	}
+
+	.button-primary {
+		@apply button bg-buttonPrimaryBg hover:bg-buttonPrimaryHover text-buttonPrimaryText
+	}
+
+	.button-secondary {
+		@apply button bg-buttonSecondaryBg hover:bg-buttonSecondaryHover text-buttonSecondaryText
+	}
+
+	.button-danger {
+		@apply button bg-deleteButtonBg hover:bg-deleteButtonHover text-deleteButtonText
+	}
+
 	:root {
 		--bodyBg: #e4ebfa;
 		--navBarBg: white;
@@ -45,7 +61,7 @@
 	}
 
 	/* Dark theme */
-    
+
 	.dark {
 		--bodyBg: #20212c;
 		--navBarBg: #2b2c37;
@@ -71,7 +87,7 @@
 		--buttonPrimaryText: white;
 		--buttonSecondaryBg: white;
 		--buttonSecondaryText: #635fc7;
-		--buttonSecondaryHover: rgba(255, 255, 255, 0.6);
+		--buttonSecondaryHover: white;
 		--deleteButtonBg: #ea5555;
 		--deleteButtonText: white;
 		--deleteButtonHover: #ff9898;
@@ -84,21 +100,21 @@
 		--normalTheme: black;
 		--editDropDown: #20212c;
 	}
+}
 
-	/* Scrollbar styles */
-	::-webkit-scrollbar {
-		width: 10px;
-		height: 10%;
-		background: var(--scrollBg);
-	}
+/* Scrollbar styles */
+::-webkit-scrollbar {
+	width: 10px;
+	height: 10%;
+	background: var(--bodyBg);
+}
 
-	::-webkit-scrollbar-track {
-		border-radius: 10px;
-		background: var(--scrollBg);
-	}
+::-webkit-scrollbar-track {
+	border-radius: 10px;
+	background: var(--bodyBg);
+}
 
-	::-webkit-scrollbar-thumb {
-		border-radius: 5px;
-		background: var(--scrollBg);
-	}
+::-webkit-scrollbar-thumb {
+	border-radius: 5px;
+	background: var(--scrollBg);
 }
