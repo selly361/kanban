@@ -2,7 +2,11 @@ import { z } from 'zod'
 
 const SubTaskValidation = z
 	.object({
-		title: z.string().min(1, 'Subtask title is required'),
+		title: z
+			.string()
+			.trim()
+			.min(1, 'Subtask title is required')
+			.max(100, 'Subtask title must be less than 100 characters'),
 		isCompleted: z.boolean()
 	})
 	.array()
@@ -19,9 +23,19 @@ const SubTaskValidation = z
 
 const TaskValidation = z
 	.object({
-		title: z.string().min(1, 'Task title is required'),
-		description: z.string().optional(),
-		status: z.string().min(1, 'Status is required'),
+		title: z
+			.string()
+			.trim()
+			.min(1, 'Task title is required')
+			.max(20, 'Task title must be less than 20 characters'),
+		description: z
+			.string()
+			.trim()
+			.max(200, 'Description must be less than 200 characters')
+			.optional(),
+		status: z
+			.string()
+			.min(1, 'Status is required'),
 		subtasks: SubTaskValidation
 	})
 	.array()
@@ -38,7 +52,11 @@ const TaskValidation = z
 
 const ColumnValidation = z
 	.object({
-		name: z.string().min(1, 'Column name is required'),
+		name: z
+			.string()
+			.trim()
+			.min(1, 'Column name is required')
+			.max(15, 'Column name must be less than 15 characters'),
 		tasks: TaskValidation
 	})
 	.array()
@@ -53,9 +71,14 @@ const ColumnValidation = z
 		}
 	)
 
+
 const BoardValidation = z
 	.object({
-		name: z.string().min(1, 'Board name is required'),
+		name: z
+			.string()
+			.trim()
+			.min(1, 'Board name is required')
+			.max(15, 'Board name must be less than 15 characters'),
 		columns: ColumnValidation
 	})
 	.refine(
