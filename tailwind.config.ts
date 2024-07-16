@@ -1,7 +1,6 @@
 import type { Config } from 'tailwindcss'
 
 const config: Config = {
-	darkMode: 'class',
 	content: [
 		'./pages/**/*.{js,ts,jsx,tsx,mdx}',
 		'./components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -35,6 +34,7 @@ const config: Config = {
 				deleteButtonBg: 'var(--deleteButtonBg)',
 				deleteButtonText: 'var(--deleteButtonText)',
 				deleteButtonHover: 'var(--deleteButtonHover)',
+				tabButtonHover: 'var(--tabButtonHover)',
 
 				textPrimary: 'var(--textPrimary)',
 
