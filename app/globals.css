@@ -3,6 +3,14 @@
 @tailwind utilities;
 
 @layer components {
+	.main-container {
+		position: absolute;
+		width: calc(100vw - 288px);
+		height: calc(100vh - 96px);
+		right: 0;
+		bottom: 0;
+	}
+
 	.button {
 		@apply transition-colors duration-300 ease-in-out grid place-items-center rounded-button-md px-6;
 	}
@@ -58,7 +66,7 @@
 		--deleteButtonBg: #ea5555;
 		--deleteButtonText: #fff;
 		--deleteButtonHover: #ff9898;
-		--tabButtonHover: rgba(99, 95, 199, .1);
+		--tabButtonHover: rgba(99, 95, 199, 0.1);
 		--textPrimary: black;
 		--border: rgba(0, 0, 0, 0.15);
 		--grey: #828fa3;
