@@ -3,30 +3,38 @@
 @tailwind utilities;
 
 @layer components {
-	/* Light theme */
-
 	.button {
-		@apply transition-colors duration-300 ease-in-out grid place-items-center rounded-button-md px-6
+		@apply transition-colors duration-300 ease-in-out grid place-items-center rounded-button-md px-6;
 	}
 
 	.button-primary {
-		@apply button bg-buttonPrimaryBg hover:bg-buttonPrimaryHover text-buttonPrimaryText
+		@apply button bg-buttonPrimaryBg hover:bg-buttonPrimaryHover text-buttonPrimaryText;
 	}
 
 	.button-secondary {
-		@apply button bg-buttonSecondaryBg hover:bg-buttonSecondaryHover text-buttonSecondaryText
+		@apply button bg-buttonSecondaryBg hover:bg-buttonSecondaryHover text-buttonSecondaryText;
 	}
 
 	.button-danger {
-		@apply button bg-deleteButtonBg hover:bg-deleteButtonHover text-deleteButtonText
+		@apply button bg-deleteButtonBg hover:bg-deleteButtonHover text-deleteButtonText;
 	}
+
+	.button-tab {
+		@apply transition-colors rounded-r-button-lg duration-500 ease-in-out text-heading-m px-8 py-3 flex gap-4 items-center text-grey;
+	}
+
+	.button-tab > path {
+		@apply fill-current;
+	}
+
+	/* Light theme */
 
 	:root {
 		--bodyBg: #e4ebfa;
-		--navBarBg: white;
-		--asideBg: white;
-		--taskBg: white;
-		--scrollBg: white;
+		--navBarBg: #fff;
+		--asideBg: #fff;
+		--taskBg: #fff;
+		--scrollBg: #fff;
 		--NewColumn: linear-gradient(
 			to bottom,
 			rgba(121, 132, 147, 0.2),
@@ -35,34 +43,34 @@
 		);
 		--subTaskCheckBoxBg: #f4f7fd;
 		--subTaskCheckBoxHover: #979797;
-		--checkBoxBg: white;
+		--checkBoxBg: #fff;
 		--completedCheckBoxBg: #635fc7;
 		--textFieldError: #ea5555;
 		--dropDownBorder: #828fa3;
 		--dropDownActive: #635fc7;
-		--dropDownBg: white;
+		--dropDownBg: #fff;
 		--buttonPrimaryBg: #635fc7;
 		--buttonPrimaryHover: #a8a4ff;
-		--buttonPrimaryText: white;
+		--buttonPrimaryText: #fff;
 		--buttonSecondaryBg: rgba(99, 95, 199, 0.1);
 		--buttonSecondaryText: #635fc7;
 		--buttonSecondaryHover: rgba(99, 95, 199, 0.25);
 		--deleteButtonBg: #ea5555;
-		--deleteButtonText: white;
+		--deleteButtonText: #fff;
 		--deleteButtonHover: #ff9898;
+		--tabButtonHover: rgba(99, 95, 199, .1);
 		--textPrimary: black;
 		--border: rgba(0, 0, 0, 0.15);
 		--grey: #828fa3;
 		--blue: #635fc7;
 		--lightBlue: #a8a4ff;
 		--red: #ea5555;
-		--normalTheme: white;
-		--editDropDown: white;
+		--normalTheme: #fff;
+		--editDropDown: #fff;
 	}
 
 	/* Dark theme */
-
-	.dark {
+	[data-theme='dark'] {
 		--bodyBg: #20212c;
 		--navBarBg: #2b2c37;
 		--asideBg: #2b2c37;
@@ -84,14 +92,15 @@
 		--dropDownBg: #20212c;
 		--buttonPrimaryBg: #635fc7;
 		--buttonPrimaryHover: #a8a4ff;
-		--buttonPrimaryText: white;
-		--buttonSecondaryBg: white;
+		--buttonPrimaryText: #fff;
+		--buttonSecondaryBg: #fff;
 		--buttonSecondaryText: #635fc7;
-		--buttonSecondaryHover: white;
+		--buttonSecondaryHover: #fff;
 		--deleteButtonBg: #ea5555;
-		--deleteButtonText: white;
+		--deleteButtonText: #fff;
 		--deleteButtonHover: #ff9898;
-		--textPrimary: white;
+		--tabButtonHover: #fff;
+		--textPrimary: #fff;
 		--border: #3e3f4e;
 		--grey: #828fa3;
 		--blue: #635fc7;
