@@ -18,6 +18,7 @@ const config: Config = {
 				subTaskCheckBoxBg: 'var(--subTaskCheckBoxBg)',
 				subTaskCheckBoxHover: 'var(--subTaskCheckBoxHover)',
 				checkBoxBg: 'var(--checkBoxBg)',
+				checkBoxBorder: '#828fa3',
 				completedCheckBoxBg: 'var(--completedCheckBoxBg)',
 				textFieldError: 'var(--textFieldError)',
 
@@ -35,6 +36,13 @@ const config: Config = {
 				deleteButtonText: 'var(--deleteButtonText)',
 				deleteButtonHover: 'var(--deleteButtonHover)',
 				tabButtonHover: 'var(--tabButtonHover)',
+
+				googleButtonBg: '#fff',
+				googleButtonText: '#1e293b',
+				googleButtonBorder: '#e2e8f0',
+				githubButtonBg: '#fff',
+				githubButtonText: '#1e293b',
+				githubButtonBorder: '#e2e8f0',
 
 				textPrimary: 'var(--textPrimary)',
 
@@ -54,12 +62,15 @@ const config: Config = {
 				'body-m': ['12px', { fontWeight: '700' }]
 			},
 			backgroundImage: {
-				NewColumn: 'var(--NewColumn)'
+				NewColumn: 'var(--NewColumn)',
+				textGradient: 'var(--text-gradient)',
+				checkBox: "url('/check-icon.svg')"
 			},
 
 			borderRadius: {
 				'button-md': '20px',
-				'button-lg': '24px'
+				'button-lg': '24px',
+				'subtask': '4px'
 			}
 		}
 	},
