@@ -1,3 +1,9 @@
+/* Animation Types */
+
+export type AnimationType = 'sidebar' | 'modal' | 'main'
+
+/* Board Types */
+
 export interface Subtask {
 	title: string
 	isCompleted: boolean
