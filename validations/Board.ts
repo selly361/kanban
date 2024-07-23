@@ -1,24 +1,27 @@
+import { isBoardNameUnique } from '@/actions'
+import { Column } from '@/types'
 import { z } from 'zod'
 
 const SubTaskValidation = z
-	.object({
-		title: z
-			.string()
-			.trim()
-			.min(1, 'Subtask title is required')
-			.max(100, 'Subtask title must be less than 100 characters'),
-		isCompleted: z.boolean()
-	})
-	.array()
+	.array(
+		z.object({
+			title: z
+				.string()
+				.trim()
+				.min(1, 'Subtask title is required')
+				.max(100, 'Subtask title must be less than 100 characters'),
+			isCompleted: z.boolean()
+		})
+	)
+	.optional()
 	.refine(
 		(subtasks) => {
+			if (!subtasks) return true
 			const titles = subtasks.map((subtask) => subtask.title)
 			const uniqueTitles = new Set(titles)
 			return titles.length === uniqueTitles.size
 		},
-		{
-			message: 'Subtask titles must be unique'
-		}
+		{ message: 'Subtask titles must be unique' }
 	)
 
 const TaskValidation = z
@@ -33,14 +36,15 @@ const TaskValidation = z
 			.trim()
 			.max(200, 'Description must be less than 200 characters')
 			.optional(),
-		status: z
-			.string()
-			.min(1, 'Status is required'),
+		status: z.string().min(1, 'Status is required'),
 		subtasks: SubTaskValidation
 	})
 	.array()
+	.optional()
 	.refine(
 		(tasks) => {
+			if (!tasks) return true
+
 			const titles = tasks.map((task) => task.title)
 			const uniqueTitles = new Set(titles)
 			return titles.length === uniqueTitles.size
@@ -51,26 +55,25 @@ const TaskValidation = z
 	)
 
 const ColumnValidation = z
-	.object({
-		name: z
-			.string()
-			.trim()
-			.min(1, 'Column name is required')
-			.max(15, 'Column name must be less than 15 characters'),
-		tasks: TaskValidation
-	})
-	.array()
+	.array(
+		z.object({
+			name: z
+				.string()
+				.trim()
+				.min(1, 'Column name is required')
+				.max(15, 'Column name must be less than 15 characters'),
+			tasks: TaskValidation
+		})
+	)
 	.refine(
 		(columns) => {
+			if (!columns) return true
 			const names = columns.map((column) => column.name)
 			const uniqueNames = new Set(names)
 			return names.length === uniqueNames.size
 		},
-		{
-			message: 'Column names must be unique'
-		}
+		{ message: 'Column names must be unique' }
 	)
-
 
 const BoardValidation = z
 	.object({
@@ -78,14 +81,18 @@ const BoardValidation = z
 			.string()
 			.trim()
 			.min(1, 'Board name is required')
-			.max(15, 'Board name must be less than 15 characters'),
+			.max(15, 'Board name must be less than 15 characters')
+			.refine(async (boardName) => await isBoardNameUnique(boardName)),
 		columns: ColumnValidation
 	})
 	.refine(
 		(board) => {
-			const columnNames = board.columns.map((column) => column.name)
+			if (!board.columns) return true
+
+			const columnNames = board.columns.map((column: Column) => column.name)
+
 			for (const column of board.columns) {
-				for (const task of column.tasks) {
+				for (const task of column.tasks || []) {
 					if (!columnNames.includes(task.status)) {
 						return false
 					}
