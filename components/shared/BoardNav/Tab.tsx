@@ -1,3 +1,5 @@
+'use client'
+
 import { BoardIcon } from '@/assets/icons'
 import clsx from 'clsx'
 import Link from 'next/link'
@@ -13,7 +15,6 @@ function Tab({ tab }: Props) {
 	return (
 		<Link
 			href={`/${tab}`}
-			key={tab}
 			className={clsx(
 				'button-tab',
 				pathname.includes(tab)
