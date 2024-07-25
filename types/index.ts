@@ -1,27 +1,47 @@
+import { BoardValidation } from '@/validations'
+import { z } from 'zod'
+
 /* Animation Types */
 
 export type AnimationType = 'sidebar' | 'modal' | 'main'
 
 /* Board Types */
 
-export interface Subtask {
+export interface ISubtask {
 	title: string
 	isCompleted: boolean
 }
 
-export interface Task {
+export interface ITask {
+	id: string
 	title: string
-	description: string
+	description?: string
 	status: string
-	subtasks: Subtask[]
+	subtasks?: ISubtask[]
 }
 
-export interface Column {
+export interface IColumn {
 	name: string
-	tasks: Task[]
+	tasks?: ITask[]
 }
 
-export interface Board {
+export interface IBoard {
 	name: string
-	columns: Column[]
+	columns?: IColumn[]
 }
+
+/* Modal Type */
+
+export type Modal =
+	| 'deleteTask'
+	| 'deleteBoard'
+	| 'addBoard'
+	| 'editBoard'
+	| 'viewTask'
+	| 'editTask'
+	| 'newTask'
+	| null
+
+ /* Form Values Type */
+
+export type FormValues = z.infer<typeof BoardValidation>

@@ -1,40 +1,50 @@
 'use server'
 
 import { Board, User } from '@/models'
-import { Column, Task, Board as IBoard } from '@/types'
+import { IBoard, IColumn, ITask } from '@/types'
 import {
 	BoardValidation,
 	ColumnValidation,
 	TaskValidation
 } from '@/validations'
 import { revalidatePath } from 'next/cache'
-import { getSessionUserId, isBoardNameUnique } from './helpers'
+import { getSessionUserId } from '@/utils'
 import { connectToDB } from '@/lib'
 
-const revalidateBoardPath = (boardName: string) => {
+const revalidateBoardPath = (boardName: string) =>
 	revalidatePath(`/${boardName}`)
+
+type ValidSchemas =
+	| typeof ColumnValidation
+	| typeof BoardValidation
+	| typeof TaskValidation
+
+const handleValidation = async (
+	schema: ValidSchemas,
+	data: IBoard | IColumn | ITask
+) => {
+	const result = await schema.safeParseAsync(data)
+	if (!result.success) {
+		const errorMessages = result.error.errors.map((e) => e.message).join(', ')
+		throw new Error(`Validation error: ${errorMessages}`)
+	}
 }
 
 export async function createTask(
 	boardName: string,
 	columnName: string,
-	taskData: Task
-): Promise<Task> {
+	taskData: ITask
+) {
 	try {
-
 		await connectToDB()
 
 		const board = await Board.findOne({ name: boardName })
 		if (!board) throw new Error('Board not found')
 
-		const column = board.columns.find((col: Column) => col.name === columnName)
+		const column = board.columns.find((col: IColumn) => col.name === columnName)
 		if (!column) throw new Error('Column not found')
 
-		const { success } = await TaskValidation.safeParseAsync(taskData)
-
-		if (!success) {
-			throw new Error('Invalid task data')
-		}
+		await handleValidation(TaskValidation, taskData)
 
 		column.tasks.push(taskData)
 		await board.save()
@@ -52,15 +62,14 @@ export async function deleteTask(
 	boardName: string,
 	columnName: string,
 	taskId: string
-): Promise<string> {
+) {
 	try {
-
 		await connectToDB()
 
 		const board = await Board.findOne({ name: boardName })
 		if (!board) throw new Error('Board not found')
 
-		const column = board.columns.find((col: Column) => col.name === columnName)
+		const column = board.columns.find((col: IColumn) => col.name === columnName)
 		if (!column) throw new Error('Column not found')
 
 		column.tasks.id(taskId).remove()
@@ -79,26 +88,20 @@ export async function editTask(
 	boardName: string,
 	columnName: string,
 	taskId: string,
-	updatedTaskData: Task
-): Promise<Task> {
+	updatedTaskData: ITask
+) {
 	try {
-
 		await connectToDB()
 
 		const board = await Board.findOne({ name: boardName })
 		if (!board) throw new Error('Board not found')
 
-		const column = board.columns.find((col: Column) => col.name === columnName)
+		const column = board.columns.find((col: IColumn) => col.name === columnName)
 		if (!column) throw new Error('Column not found')
 
-		const { success } = await TaskValidation.safeParseAsync(updatedTaskData)
-
-		if (!success) {
-			throw new Error('Invalid task data')
-		}
+		await handleValidation(TaskValidation, updatedTaskData)
 
 		const task = column.tasks.id(taskId)
-
 		Object.assign(task, updatedTaskData)
 
 		await board.save()
@@ -114,26 +117,17 @@ export async function editTask(
 
 export async function addBoard(boardData: IBoard): Promise<IBoard> {
 	try {
-
 		await connectToDB()
 
-		const [{ success, error }, uniqueBoardName, userId] = await Promise.all([
-			BoardValidation.safeParseAsync(boardData),
-			isBoardNameUnique(boardData.name),
-			await getSessionUserId()
-		])
+		await handleValidation(BoardValidation, boardData)
 
-		console.log(error)
-
-		if (!success) throw new Error('Invalid Board data')
-
-		if (!uniqueBoardName) throw new Error('Board name is not unique')
+		const id = await getSessionUserId()
 
 		const board = new Board(boardData)
 		await board.save()
 
 		await User.findOneAndUpdate(
-			{ userId },
+			{ id },
 			{ $addToSet: { boards: board._id } },
 			{ upsert: true }
 		)
@@ -152,12 +146,9 @@ export async function editBoard(
 	updatedBoardData: IBoard
 ): Promise<IBoard | null> {
 	try {
-
 		await connectToDB()
 
-		const { success } = await BoardValidation.safeParseAsync(updatedBoardData)
-
-		if (!success) throw new Error('Invalid Board data')
+		await handleValidation(BoardValidation, updatedBoardData)
 
 		const board = await Board.findOneAndUpdate(
 			{ name: boardName },
@@ -176,7 +167,6 @@ export async function editBoard(
 
 export async function deleteBoard(boardName: string): Promise<string> {
 	try {
-
 		await connectToDB()
 
 		await Board.findOneAndDelete({ name: boardName })
@@ -190,26 +180,19 @@ export async function deleteBoard(boardName: string): Promise<string> {
 	}
 }
 
-export async function addColumn(
-	boardName: string,
-	columnData: Column
-): Promise<Column | undefined> {
+export async function addColumn(boardName: string, columnData: IColumn) {
 	try {
-
 		await connectToDB()
 
 		const board = await Board.findOne({ name: boardName })
-
 		if (!board) throw new Error('Board not found')
 
-		const { success } = await ColumnValidation.safeParseAsync(columnData)
+		const validatedColumnData = await handleValidation(
+			ColumnValidation,
+			columnData
+		)
 
-		if (!success) {
-			throw new Error('Invalid column data')
-		}
-
-		board.columns.push(columnData)
-
+		board.columns.push(validatedColumnData)
 		await board.save()
 
 		revalidateBoardPath(boardName)
@@ -224,26 +207,23 @@ export async function addColumn(
 export async function editColumn(
 	boardName: string,
 	columnName: string,
-	updatedColumnData: Column
-): Promise<Column | undefined> {
+	updatedColumnData: IColumn
+) {
 	try {
-
 		await connectToDB()
 
 		const board = await Board.findOne({ name: boardName })
 		if (!board) throw new Error('Board not found')
 
-		const column = board.columns.find((col: Column) => col.name === columnName)
-
+		const column = board.columns.find((col: IColumn) => col.name === columnName)
 		if (!column) throw new Error('Column not found')
 
-		const { success } = await ColumnValidation.safeParseAsync(updatedColumnData)
+		const validatedColumnData = await handleValidation(
+			ColumnValidation,
+			updatedColumnData
+		)
 
-		if (!success) {
-			throw new Error('Invalid column data')
-		}
-
-		Object.assign(column, updatedColumnData)
+		Object.assign(column, validatedColumnData)
 		await board.save()
 
 		revalidateBoardPath(boardName)
@@ -255,12 +235,8 @@ export async function editColumn(
 	}
 }
 
-export async function deleteColumn(
-	boardName: string,
-	columnName: string
-): Promise<string> {
+export async function deleteColumn(boardName: string, columnName: string) {
 	try {
-
 		await connectToDB()
 
 		const board = await Board.findOne({ name: boardName })
@@ -280,7 +256,6 @@ export async function deleteColumn(
 
 export async function fetchBoard(id: string, name: string): Promise<IBoard> {
 	try {
-
 		await connectToDB()
 
 		const board = await Board.findOne({ id, name })
@@ -291,12 +266,14 @@ export async function fetchBoard(id: string, name: string): Promise<IBoard> {
 	}
 }
 
-export async function fetchBoards(id: string, name: string): Promise<IBoard[]> {
+export async function fetchBoards(): Promise<IBoard[]> {
 	try {
-
 		await connectToDB()
 
-		const boards = await Board.find({ id, name })
+		const id = await getSessionUserId()
+
+		const { boards } = await User.findOne({ id }).populate('boards')
+
 		return boards
 	} catch (error) {
 		console.error('Error fetching boards:', error)
@@ -304,15 +281,40 @@ export async function fetchBoards(id: string, name: string): Promise<IBoard[]> {
 	}
 }
 
-export async function fetchBoardNames(userId: string): Promise<string[]> {
+export async function fetchBoardNames(): Promise<string[]> {
 	try {
+		const userId = await getSessionUserId()
 
 		await connectToDB()
 
-		const boards = await Board.find({ user: userId }).select('name').lean()
-		return boards.map((board) => board.name)
+		const user = await User.findOne({ id: userId })
+			.populate('boards', 'name')
+			.exec()
+
+		if (!user || !user.boards) {
+			throw new Error('User or boards not found')
+		}
+
+		const boardNames = user.boards.map((board: IBoard) => board.name)
+
+		return boardNames
 	} catch (error) {
-		console.error('Error fetching boards:', error)
-		throw new Error('Could not fetch boards')
+		console.error('Error fetching board names:', error)
+		throw new Error('Could not fetch board names')
+	}
+}
+
+
+export async function isBoardNameUnique(name: string) {
+	'use server'
+	try {
+		const existingBoard = await Board.findOne({ name })
+
+		console.log(existingBoard)
+
+		return !existingBoard
+	} catch (error) {
+		console.error('Error checking board name uniqueness:', error)
+		throw new Error('Could not verify board name uniqueness')
 	}
 }

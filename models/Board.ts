@@ -12,6 +12,10 @@ const SubtaskSchema = new Schema({
 })
 
 const TaskSchema = new Schema({
+	id: {
+		type: String,
+		required: false
+	},
 	title: {
 		type: String,
 		required: false
@@ -43,4 +47,4 @@ const BoardSchema = new Schema({
 	columns: [ColumnSchema]
 })
 
-export default models.Board || model('Board', BoardSchema)
+export default models?.Board || model('Board', BoardSchema)
