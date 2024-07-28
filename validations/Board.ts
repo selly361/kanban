@@ -1,8 +1,9 @@
 import { isBoardNameUnique } from '@/actions'
-import { Column } from '@/types'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 
-const SubTaskValidation = z
+
+export const SubTaskValidation = z
 	.array(
 		z.object({
 			title: z
@@ -14,23 +15,15 @@ const SubTaskValidation = z
 		})
 	)
 	.optional()
-	.refine(
-		(subtasks) => {
-			if (!subtasks) return true
-			const titles = subtasks.map((subtask) => subtask.title)
-			const uniqueTitles = new Set(titles)
-			return titles.length === uniqueTitles.size
-		},
-		{ message: 'Subtask titles must be unique' }
-	)
 
-const TaskValidation = z
+export const TaskValidation = z
 	.object({
+		id: z.string().trim().length(7, 'Task ID must be exactly 7 characters'),
 		title: z
 			.string()
 			.trim()
 			.min(1, 'Task title is required')
-			.max(20, 'Task title must be less than 20 characters'),
+			.max(100, 'Task title must be less than 100 characters'),
 		description: z
 			.string()
 			.trim()
@@ -45,16 +38,16 @@ const TaskValidation = z
 		(tasks) => {
 			if (!tasks) return true
 
-			const titles = tasks.map((task) => task.title)
-			const uniqueTitles = new Set(titles)
-			return titles.length === uniqueTitles.size
+			const ids = tasks.map((task) => task.id)
+			const uniqueIds = new Set(ids)
+			return ids.length === uniqueIds.size
 		},
 		{
-			message: 'Task titles must be unique'
+			message: 'Task id must be unique'
 		}
 	)
 
-const ColumnValidation = z
+export const ColumnValidation = z
 	.array(
 		z.object({
 			name: z
@@ -65,6 +58,7 @@ const ColumnValidation = z
 			tasks: TaskValidation
 		})
 	)
+	.optional()
 	.refine(
 		(columns) => {
 			if (!columns) return true
@@ -75,21 +69,23 @@ const ColumnValidation = z
 		{ message: 'Column names must be unique' }
 	)
 
-const BoardValidation = z
+export const BoardValidation = z
 	.object({
 		name: z
 			.string()
 			.trim()
 			.min(1, 'Board name is required')
-			.max(15, 'Board name must be less than 15 characters')
-			.refine(async (boardName) => await isBoardNameUnique(boardName)),
+			.max(30, 'Board name must be less than 15 characters')
+			.refine(async (boardName) => await isBoardNameUnique(boardName), {
+				message: 'Board names already taken'
+			}),
 		columns: ColumnValidation
 	})
 	.refine(
 		(board) => {
 			if (!board.columns) return true
 
-			const columnNames = board.columns.map((column: Column) => column.name)
+			const columnNames = board.columns.map((column) => column.name)
 
 			for (const column of board.columns) {
 				for (const task of column.tasks || []) {
@@ -106,4 +102,4 @@ const BoardValidation = z
 		}
 	)
 
-export default BoardValidation
+export const resolver = zodResolver(BoardValidation)
