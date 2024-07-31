@@ -1,1 +1,1 @@
-export { default as BoardValidation } from './Board'
+export * from './Board'
