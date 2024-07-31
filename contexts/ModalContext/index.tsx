@@ -4,7 +4,6 @@ import { Modal } from '@/types'
 import React, {
 	createContext,
 	useContext,
-	useEffect,
 	useState,
 	PropsWithChildren
 } from 'react'
@@ -32,9 +31,6 @@ export const ModalContextProvider = ({ children }: PropsWithChildren) => {
 	const [modal, setModal] = useState<Modal>(null)
 	const [sidebarOpen, setSidebarOpen] = useState(true)
 
-	useEffect(() => {
-		document.body.style.overflow = modal ? 'hidden' : 'auto'
-	}, [modal])
 
 	return (
 		<ModalContext.Provider
