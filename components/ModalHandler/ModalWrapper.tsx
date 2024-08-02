@@ -5,10 +5,10 @@ import { PropsWithChildren } from 'react'
 import { useFormContext, useModalContext } from '@/contexts'
 
 function ModalWrapper({ children }: PropsWithChildren) {
-	const { modal } = useModalContext()
+	const { modal, setModal } = useModalContext()
 	const { handleFormSubmit, handleSubmit, reset, clearErrors } = useFormContext()
 
-	const title =
+	const text =
 		modal === 'addBoard'
 			? 'Create Board'
 			: modal === 'editBoard'
@@ -17,12 +17,15 @@ function ModalWrapper({ children }: PropsWithChildren) {
 			? 'Create New Task'
 			: modal === 'editTask'
 			? 'Edit Task'
+			: modal === 'addColumn'
+			? 'Create New Column'
 			: null
 
-
-	const handleCloseModal = () => { 
+	const handleCloseModal = () => {
+		setModal(null)
+		clearErrors()
 		reset()
-    }
+	}
 
 	return (
 		<VariantWrapper className='modal-container h-max' animation='modal'>
@@ -31,12 +34,12 @@ function ModalWrapper({ children }: PropsWithChildren) {
 				onSubmit={handleSubmit(handleFormSubmit)}
 			>
 				<div className='h-full flex flex-col gap-6'>
-					<h2 className='text-heading-l text-textPrimary'>{title}</h2>
+					<h2 className='text-heading-l text-textPrimary'>{text}</h2>
 					{children}
 				</div>
 				<fieldset className='fieldset-sm h-max w-full self-end'>
+					<Button type='submit'>{text}</Button>
 					<Button variant='secondary' onClick={handleCloseModal}>Close</Button>
-					<Button type='submit'>{title}</Button>
 				</fieldset>
 			</form>
 		</VariantWrapper>
